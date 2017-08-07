@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang=tr>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Bu yazıda Tensorflow ve Keras’ı benim kullandığım şekilde kurmayı anlatacağım. Her ne kadar hem Tensorflow hem de Keras OSX ve Windows destekliyor olsa da hayatın kısa ve acımasız olduğunu göz önüne a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tensorflow ve Keras kurulumu">
+<meta property="og:url" content="http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/index.html">
+<meta property="og:site_name" content="Suni Dimağ - Yapay sinir ağı maceraları">
+<meta property="og:description" content="Bu yazıda Tensorflow ve Keras’ı benim kullandığım şekilde kurmayı anlatacağım. Her ne kadar hem Tensorflow hem de Keras OSX ve Windows destekliyor olsa da hayatın kısa ve acımasız olduğunu göz önüne a">
+<meta property="og:locale" content="tr">
+<meta property="og:updated_time" content="2017-08-03T22:09:35.698Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tensorflow ve Keras kurulumu">
+<meta name="twitter:description" content="Bu yazıda Tensorflow ve Keras’ı benim kullandığım şekilde kurmayı anlatacağım. Her ne kadar hem Tensorflow hem de Keras OSX ve Windows destekliyor olsa da hayatın kısa ve acımasız olduğunu göz önüne a">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/sunidimag/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/sunidimag/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/sunidimag/images/apple-touch-icon.png">
+          
+        
+    
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;subset=latin-ext" rel="stylesheet">
+    <!-- title -->
+    <title>Tensorflow ve Keras kurulumu</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/sunidimag/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/sunidimag/2017/08/04/101-Ilk-yapay-sinir-agimiz-Dense-layer/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&text=Tensorflow ve Keras kurulumu"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&is_video=false&description=Tensorflow ve Keras kurulumu"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Tensorflow ve Keras kurulumu&body=Check out this article: http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&name=Tensorflow ve Keras kurulumu&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tensorflow"><span class="toc-number">1.</span> <span class="toc-text">Tensorflow</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Keras"><span class="toc-number">2.</span> <span class="toc-text">Keras</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Tensorflow ve Keras kurulumu
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Suni Dimağ - Yapay sinir ağı maceraları</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-08-03T20:32:21.000Z" itemprop="datePublished">2017-08-03</time>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Bu yazıda Tensorflow ve Keras’ı benim kullandığım şekilde kurmayı anlatacağım. Her ne kadar hem Tensorflow hem de Keras OSX ve Windows destekliyor olsa da hayatın kısa ve acımasız olduğunu göz önüne alarak Virtual Machine bile olsa Ubuntu veya türevi (Lubuntu, Xubuntu vs.) bir sistemde çalışmanızı öneririm.</p>
+<p>Aşağıda Tensorflow’un orjinal kurulum dökümanlarının linklerini verdim. Ben aşağıda kendi kullandığım gibi, Ubuntu üzerinde, virtual environment ile ve tüm hesaplamaları CPU’da yapacak şekilde kurulumunu anlatacağım. Minimum 4-5 senelik bir CPUya da bir taşın sabrına sahipseniz burada yayınlayacağım tüm deneyleri bu kurulumla makul sürelerde eğitebilirsiniz.</p>
+<p><a href="https://www.tensorflow.org/install/install_linux" title="Installing TensorFlow on Ubuntu" target="_blank" rel="external">Tensorflow Ubuntu Kurulum</a><br><a href="https://www.tensorflow.org/install/install_mac" title="Installing TensorFlow on Mac OS X" target="_blank" rel="external">Tensorflow OSX Kurulum</a><br><a href="Installing TensorFlow on Windows" title="Installing TensorFlow on Windows">Tensorflow Windows Kurulum</a></p>
+<h1 id="Tensorflow"><a href="#Tensorflow" class="headerlink" title="Tensorflow"></a>Tensorflow</h1><p>Bu şekilde yaptığımız kurulumda Python’un paket yöneticisi olan pip ile kurduğumuz tüm paketler bir <em>virtual environment</em> içinde kalacak. Aynı makinada başka Python projeleriyle de ilgileniyorsaniz olası versiyon çakışmaları gibi şeyleri engellmesi açısından faydalı.</p>
+<p>Burada <em>virtual environment</em>‘i <code>~/tensorflow</code> dizinine kurduğumuzu varsaydım. Ama başka bir yere kurmak istiyorsanız komutlardaki dizini değiştirebilirsiniz.</p>
+<ol>
+<li><p>Önce Python’u ve virtual environment yaratmak için ihtiyacımız olan paketleri kuralım.</p>
+<p><code>$ sudo apt-get install python-pip python-dev python-virtualenv</code></p>
+</li>
+<li><p>Şimdi içine kurulum yapacağımız <em>virtual environment</em>‘i yaratalım.</p>
+<p><code>$ virtualenv --system-site-packages ~/tensorflow</code></p>
+</li>
+<li><p>Yarattığımız <em>virtual environment</em>‘a geçiyoruz.</p>
+<p><code>$ source ~/tensorflow/bin/activate</code></p>
+<p>Bu işlemi tensorflow’u kullanmak istediğiniz tüm terminallerde yapmanız gerekli. Bu komutu çalıştırınca aşağıdaki bash prompt’unuz aşağıdaki gibi gözükecek. Bu bize tensorflow environment’ının içinde olduğumuzu gösteriyor.</p>
+<p><code>(tensorflow)$</code></p>
+</li>
+<li><p>Öncelikle elimizdeki muhtemelen eski olan pip versiyonunu güncelleyelim:</p>
+<p><code>(tensorflow)$ pip install --upgrade pip</code></p>
+</li>
+<li><p>Şimdi pip kullanarak tensorflow’u kuruyoruz.</p>
+<p><code>(tensorflow)$ pip install --upgrade tensorflow</code></p>
+<p>Kurulum dökümanı bu komutun bazen patladığını söylüyor. Eğer sizde de çalışmazsa aşağıdaki komutu deneyin:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(tensorflow)$ pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.2.1-cp27-none-linux_x86_64.whl</div></pre></td></tr></table></figure>
+</li>
+<li><p>Machine learning’çilerin favorisi Jupyter Notebook’u da kuralım.</p>
+<p><code>(tensorflow)$ pip install --upgrade jupyter</code></p>
+</li>
+</ol>
+<p>Artık Jupyter Notebook içinde veya direkt olarak Python’da Tensorflow kütüphanesini kullanabilir haldeyiz.</p>
+<h1 id="Keras"><a href="#Keras" class="headerlink" title="Keras"></a>Keras</h1><p>Tensorflow harika bir machine learning kütüphanesi. Tensorflow’u kullanarak okuduğunuz (ve benim aksime matematiğini anlamayı başardığınız herhangi bir <em>state-of-the-art</em> machine learning makalesini implemente edebilirsiniz. Ama ne yazık ki benim gibi bu işe yeni başlayanlar ve matematik altyapısı zayıf olanlar için biraz fazla low-level kalıyor.</p>
+<p>Keras, Tensorflow veya Theano üzerinde çalışabilen daha üst seviye (high level) bir kütüphane. Sık kullanılan Machine Learning katmanları ve <em>optimizerlar</em> gibi şeyler zaten Keras’ın içinde tanımlanmış durumda. Bu da işimizi çok kolaylaştıracak. Yine pip ile kurulabiliyor.</p>
+<p><code>(tensorflow)$ pip install --upgrade keras</code></p>
+<p>Keras’ı da kurduktan sonra artık kendimize bir çalışma dizini oluşturup, jupyter’i açarak birşeyler yazmaya başlayabiliriz.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(tensorflow)$ mkdir notebook &amp;&amp; cd notebook</div><div class="line">(tensorflow)$ jupyter-notebook</div></pre></td></tr></table></figure>
+<p>Bu komutu çalıştırdığınız sistemin varsayılan tarayıcısında jupyter notebook açılacak.</p>
+<hr>
+<p>Bir sonraki yazıda ilk neural network’ümüzü eğiteceğiz.</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tensorflow"><span class="toc-number">1.</span> <span class="toc-text">Tensorflow</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Keras"><span class="toc-number">2.</span> <span class="toc-text">Keras</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&text=Tensorflow ve Keras kurulumu"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&is_video=false&description=Tensorflow ve Keras kurulumu"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Tensorflow ve Keras kurulumu&body=Check out this article: http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&title=Tensorflow ve Keras kurulumu"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://symbolengine.com/sunidimag/2017/08/03/Tensorflow-ve-Keras-kurulumu/&name=Tensorflow ve Keras kurulumu&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2017 Cem Kod
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/sunidimag/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/sunidimag/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/sunidimag/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/sunidimag/lib/jquery/jquery.min.js"></script>
+<script src="/sunidimag/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/sunidimag/js/main.js"></script>
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-184132-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+
