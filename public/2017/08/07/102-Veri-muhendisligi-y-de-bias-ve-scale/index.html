@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang=tr>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.101 dersinde kurduğumuz ağ üzerinden, verimizdeki hedef değerlerin (y) bazı özelliklerinin ağımı">
+<meta property="og:type" content="article">
+<meta property="og:title" content="102 - Veri mühendisliği - y&#39;de bias ve scale">
+<meta property="og:url" content="http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/index.html">
+<meta property="og:site_name" content="Suni Dimağ - Yapay sinir ağı maceraları">
+<meta property="og:description" content="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.101 dersinde kurduğumuz ağ üzerinden, verimizdeki hedef değerlerin (y) bazı özelliklerinin ağımı">
+<meta property="og:locale" content="tr">
+<meta property="og:image" content="http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/1.png">
+<meta property="og:image" content="http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/2.png">
+<meta property="og:image" content="http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/3.png">
+<meta property="og:image" content="http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/4.png">
+<meta property="og:updated_time" content="2017-08-07T19:32:27.897Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="102 - Veri mühendisliği - y&#39;de bias ve scale">
+<meta name="twitter:description" content="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.101 dersinde kurduğumuz ağ üzerinden, verimizdeki hedef değerlerin (y) bazı özelliklerinin ağımı">
+<meta name="twitter:image" content="http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/1.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/sunidimag/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/sunidimag/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/sunidimag/images/apple-touch-icon.png">
+          
+        
+    
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;subset=latin-ext" rel="stylesheet">
+    <!-- title -->
+    <title>102 - Veri mühendisliği - y&#39;de bias ve scale</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/sunidimag/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/sunidimag/2017/08/04/101-Ilk-yapay-sinir-agimiz-Dense-layer/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&text=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&is_video=false&description=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=102 - Veri mühendisliği - y&#39;de bias ve scale&body=Check out this article: http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&name=102 - Veri mühendisliği - y&#39;de bias ve scale&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz"><span class="toc-number">1.</span> <span class="toc-text">Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Training-ve-test-kumelerinin-olusturulmasi"><span class="toc-number"></span> <span class="toc-text">Training ve test kümelerinin oluşturulması</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Modelin-olusturulmasi"><span class="toc-number"></span> <span class="toc-text">Modelin oluşturulması</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-0-Referans"><span class="toc-number"></span> <span class="toc-text">Deney 0 - Referans</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-1-Pozitif-Bias"><span class="toc-number"></span> <span class="toc-text">Deney 1 - Pozitif Bias</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-2-Kucuk-scale"><span class="toc-number"></span> <span class="toc-text">Deney 2 - Küçük scale</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ozet"><span class="toc-number"></span> <span class="toc-text">Özet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Odevler"><span class="toc-number"></span> <span class="toc-text">Ödevler</span></a>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        102 - Veri mühendisliği - y&#39;de bias ve scale
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Suni Dimağ - Yapay sinir ağı maceraları</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-08-07T17:48:03.000Z" itemprop="datePublished">2017-08-07</time>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h5 id="Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz"><a href="#Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz" class="headerlink" title="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz."></a>Bu yazıdaki tüm kodları jupyter notebook formatında, <a href="https://github.com/azmesai/suni-dimag" target="_blank" rel="external">Suni Dimağ github repository</a>‘sinden çekebilirsiniz.</h5><p><a href="https://github.com/azmesai/suni-dimag/blob/master/101/101.ipynb" target="_blank" rel="external">101</a> dersinde kurduğumuz ağ üzerinden, verimizdeki hedef değerlerin (y) bazı özelliklerinin ağımızın performansını nasıl etkilediğini inceleyeceğiz.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">%matplotlib inline</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">import</span> random</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> math</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"></div><div class="line">np.random.seed(<span class="number">1337</span>)</div></pre></td></tr></table></figure>
+<h2 id="Training-ve-test-kumelerinin-olusturulmasi"><a href="#Training-ve-test-kumelerinin-olusturulmasi" class="headerlink" title="Training ve test kümelerinin oluşturulması"></a>Training ve test kümelerinin oluşturulması</h2><p>Önceki derste yazdığımız training ve test kümelerini üreten fonksiyonları biraz daha genelleştirdik. Bu kez parametre olarak bir fonksiyon alıyorlar ve y değerlerini, ürettikleri X değerlerini bu fonksiyondan geçirerek oluşturuyorlar.</p>
+<p>Yeni yazdığımız sine_function fonksiyonu ise bize üç ayrı ayarlanabilir parametresi olan bir sinüs fonksiyonu döndürüyor. Training ve test kümesi üreten fonksiyonlara parametre olaran buradan aldığımız fonksiyonu geçeceğiz.</p>
+<p>testModel fonksiyonu ise yine geçen derste kullandığımız grafik fonksiyonunun aynısı.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">sine_function</span><span class="params">(noiserate=<span class="number">0</span>, bias=<span class="number">0</span>, scale=<span class="number">1</span>)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_sine_function</span><span class="params">(angle)</span>:</span></div><div class="line">        <span class="keyword">return</span> ( math.sin( angle ) +</div><div class="line">               random.uniform(-noiserate, noiserate) ) * scale + bias</div><div class="line">    <span class="keyword">return</span> _sine_function</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">trainingData</span><span class="params">(func)</span>:</span></div><div class="line">    noiserate = <span class="number">0.2</span></div><div class="line">    X = []</div><div class="line">    y = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">600</span>):</div><div class="line">        angle=random.uniform(-math.pi,math.pi)</div><div class="line">        X.append(angle)</div><div class="line">        y.append(func(angle))</div><div class="line">    <span class="keyword">return</span> X,y</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">testData</span><span class="params">(func)</span>:</span></div><div class="line">    X = []</div><div class="line">    y = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">-1800</span>,<span class="number">1800</span>):</div><div class="line">        angle = math.radians(i/<span class="number">10</span>)</div><div class="line">        X.append(angle)</div><div class="line">        y.append(func(angle))</div><div class="line">    <span class="keyword">return</span> X,y</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">testModel</span><span class="params">(X,y)</span>:</span></div><div class="line">    res = model.predict(X, batch_size=<span class="number">32</span>)</div><div class="line"></div><div class="line">    plt.plot(X,y, label=<span class="string">'sin'</span>)</div><div class="line">    plt.plot(X,res, label=<span class="string">'sonuc'</span>)</div><div class="line">    plt.xlabel(<span class="string">'x (Radyan)'</span>)</div><div class="line">    plt.ylabel(<span class="string">'sin(x)'</span>)</div><div class="line">    plt.legend()</div><div class="line">    plt.show()</div></pre></td></tr></table></figure>
+<h2 id="Modelin-olusturulmasi"><a href="#Modelin-olusturulmasi" class="headerlink" title="Modelin oluşturulması"></a>Modelin oluşturulması</h2><p>Yine bir önceki derste kullandığımız modelin aynısını kullanacağız.</p>
+<p>Modelimizi oluşturduktan sonra tüm bağlantı ağırlıklarını bir değişkende saklıyoruz ki her deneye aynı noktadan başlayabilelim.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(Dense(<span class="number">80</span>, input_shape=(<span class="number">1</span>,), activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(<span class="number">1</span>))</div><div class="line">model.compile(loss=<span class="string">'mse'</span>, optimizer=<span class="string">'sgd'</span>)</div><div class="line"></div><div class="line">weights = model.get_weights()</div></pre></td></tr></table></figure>
+<h2 id="Deney-0-Referans"><a href="#Deney-0-Referans" class="headerlink" title="Deney 0 - Referans"></a>Deney 0 - Referans</h2><p>İlk olarak <em>noiserate</em> = 0, <em>bias</em> = 0 ve <em>scale</em> = 1 ile ağımızı 450 <em>epoch</em> eğittizde nasıl bir sonuç aldığımıza bakalım. Bu bizim referansımız olacak. Yapacağımız değişikliklerde performansı bu referanslar karşılastıracağız.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">model.set_weights(weights)</div><div class="line">sine = sine_function(noiserate=<span class="number">0</span>,bias=<span class="number">0</span>,scale=<span class="number">1</span>)</div><div class="line">X,y = trainingData(sine)</div><div class="line">X_test, y_test = testData(sine)</div><div class="line"></div><div class="line">model.fit(X, y, epochs=<span class="number">350</span>,verbose=<span class="number">0</span>)</div><div class="line">testModel(X_test,y_test)</div></pre></td></tr></table></figure>
+<p><img src="1.png" alt=""></p>
+<p>Bakalım <em>bias</em> neyi değiştiriyor.</p>
+<h2 id="Deney-1-Pozitif-Bias"><a href="#Deney-1-Pozitif-Bias" class="headerlink" title="Deney 1 - Pozitif Bias"></a>Deney 1 - Pozitif Bias</h2><p>Fonskiyonumuzun <em>bias</em> ayarı, fonksiyonun çıktısını olduğu gibi yukarı veya aşağı itelemeye yarıyor. Yukarıdaki örnekte sinüs fonksiyonunun -1 ile 1 arası değerler döndüğünü görüyorsunuz. Şimdi aynı fonksiyonu 39 ile 41 arası değerler dönecek halde tanımlayıp ağımızı yeniden eğitmeyi deneyelim.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">model.set_weights(weights)</div><div class="line">sine = sine_function(noiserate=<span class="number">0</span>,bias=<span class="number">40</span>,scale=<span class="number">1</span>)</div><div class="line">X,y = trainingData(sine)</div><div class="line">X_test, y_test = testData(sine)</div><div class="line"></div><div class="line">model.compile(loss=<span class="string">'mse'</span>, optimizer=<span class="string">'sgd'</span>)</div><div class="line">model.fit(X, y, epochs=<span class="number">350</span>, verbose=<span class="number">0</span>)</div><div class="line">testModel(X_test,y_test)</div></pre></td></tr></table></figure>
+<p><img src="2.png" alt=""></p>
+<p>Ağımızın performansı gözle görülür ölçüde düştü. Konuyu iyice abartırsak ne olur dersiniz?</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">model.set_weights(weights)</div><div class="line">sine = sine_function(noiserate=<span class="number">0</span>,bias=<span class="number">400</span>,scale=<span class="number">1</span>)</div><div class="line">X,y = trainingData(sine)</div><div class="line">X_test, y_test = testData(sine)</div><div class="line"></div><div class="line">model.compile(loss=<span class="string">'mse'</span>, optimizer=<span class="string">'sgd'</span>)</div><div class="line">model.fit(X, y, epochs=<span class="number">3</span>)</div></pre></td></tr></table></figure>
+<pre>
+Epoch 1/3
+600/600 [==============================] - 0s - loss: nan             
+Epoch 2/3
+600/600 [==============================] - 0s - loss: nan     
+Epoch 3/3
+600/600 [==============================] - 0s - loss: nan     
+</pre>
+
+<p><em>Loss</em> taşma yapacak derece büyüdü ve modelin hesaplayamayacağı hale geldi.</p>
+<h2 id="Deney-2-Kucuk-scale"><a href="#Deney-2-Kucuk-scale" class="headerlink" title="Deney 2 - Küçük scale"></a>Deney 2 - Küçük scale</h2><p>Fonskiyonumuzun <em>scale</em> ayarı, fonksiyonun çıktısını y ekseninde daraltıp genişletmeye yarıyor. Yukarıdaki örnekte sinüs fonksiyonunun -1 ile 1 arası değerler döndüğünü görüyorsunuz. Şimdi aynı fonksiyonu -0.1 ile 0.1 arası değerler dönecek halde tanımlayıp ağımızı yeniden eğitmeyi deneyelim.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">model.set_weights(weights)</div><div class="line">sine = sine_function(noiserate=<span class="number">0</span>,bias=<span class="number">0</span>,scale=<span class="number">0.3</span>)</div><div class="line">X,y = trainingData(sine)</div><div class="line">X_test, y_test = testData(sine)</div><div class="line"></div><div class="line">model.compile(loss=<span class="string">'mse'</span>, optimizer=<span class="string">'sgd'</span>)</div><div class="line">model.fit(X, y, epochs=<span class="number">350</span>, verbose=<span class="number">0</span>)</div><div class="line">testModel(X_test,y_test)</div></pre></td></tr></table></figure>
+<p><img src="3.png" alt=""></p>
+<p>Ağımızın performansı yine düştü. Fakat bu seferki çıktı önceki derste ağımız fonksiyonu tam olarak öğrenemeden arada çizdiğimiz grafiklere benziyor. Eğitimi biraz daha sürdürelim.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">model.fit(X, y, epochs=<span class="number">600</span>, verbose=<span class="number">0</span>)</div><div class="line">testModel(X_test,y_test)</div></pre></td></tr></table></figure>
+<p><img src="4.png" alt=""></p>
+<p>Evet gerçekten de öğrenmeyi başardı, ama eğitim neredeyse 3 kat uzun sürdü ve hala performansımız referans kadar iyi değil.</p>
+<p>Uuuu beybi.</p>
+<h2 id="Ozet"><a href="#Ozet" class="headerlink" title="Özet"></a>Özet</h2><ul>
+<li>Ağımıza öğretmeye çalıştığımız hedef değerlerin <em>bias</em> ve <em>scale</em>‘i veya istatistik diliyle ortalama ve varyans’ı önemli. Seçilen aktivasyon fonksiyolanlarına göre kullanılabilecek aralıklar değişse bile, ortalamanın 0, varyansın ise 1 olduğu durum genellikle tercih edilir.</li>
+<li>Yüksek <em>bias</em>, veya ortalamanın yüksek olması nöronların hassasiyetlerini yitirmesi ve aşırı durumlarda ağırlık veya <em>loss</em> değerinin taşma yapmasına sebep olabilir.</li>
+<li>Küçük scale veya varyansın düşük olması durumunda nöronlar hem hassasiyetlerini kaybeder, hem de eğitim çok daha uzun sürer.</li>
+</ul>
+<h2 id="Odevler"><a href="#Odevler" class="headerlink" title="Ödevler"></a>Ödevler</h2><ul>
+<li>Negatif <em>bias</em> durumunda ağın performansı nasıl etkileniyor?</li>
+<li><em>Scale</em>‘in gereğinden büyük olması durumunda ağın performansı nasıl etkileniyor?</li>
+<li>Aynı deneyleri gürültü miktarını 0.2 olarak ayarlayıp tekrarlayın. Bu durumda ne değişiyor?</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz"><span class="toc-number">1.</span> <span class="toc-text">Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Training-ve-test-kumelerinin-olusturulmasi"><span class="toc-number"></span> <span class="toc-text">Training ve test kümelerinin oluşturulması</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Modelin-olusturulmasi"><span class="toc-number"></span> <span class="toc-text">Modelin oluşturulması</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-0-Referans"><span class="toc-number"></span> <span class="toc-text">Deney 0 - Referans</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-1-Pozitif-Bias"><span class="toc-number"></span> <span class="toc-text">Deney 1 - Pozitif Bias</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-2-Kucuk-scale"><span class="toc-number"></span> <span class="toc-text">Deney 2 - Küçük scale</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ozet"><span class="toc-number"></span> <span class="toc-text">Özet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Odevler"><span class="toc-number"></span> <span class="toc-text">Ödevler</span></a>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&text=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&is_video=false&description=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=102 - Veri mühendisliği - y&#39;de bias ve scale&body=Check out this article: http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&title=102 - Veri mühendisliği - y&#39;de bias ve scale"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://symbolengine.com/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/&name=102 - Veri mühendisliği - y&#39;de bias ve scale&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2017 Cem Kod
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/sunidimag/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/sunidimag/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/sunidimag/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/sunidimag/lib/jquery/jquery.min.js"></script>
+<script src="/sunidimag/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/sunidimag/js/main.js"></script>
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-184132-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+
