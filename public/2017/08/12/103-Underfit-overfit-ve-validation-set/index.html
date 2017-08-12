@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang=tr>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.103 - Underfit, overfit ve validation setBu kez ağımızın karmaşıklığını arttırmanın ve azaltmanı">
+<meta property="og:type" content="article">
+<meta property="og:title" content="103 - Underfit, overfit ve validation set">
+<meta property="og:url" content="http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/index.html">
+<meta property="og:site_name" content="Suni Dimağ - Yapay sinir ağı maceraları">
+<meta property="og:description" content="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.103 - Underfit, overfit ve validation setBu kez ağımızın karmaşıklığını arttırmanın ve azaltmanı">
+<meta property="og:locale" content="tr">
+<meta property="og:image" content="http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/1.png">
+<meta property="og:image" content="http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/2.png">
+<meta property="og:updated_time" content="2017-08-12T16:00:09.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="103 - Underfit, overfit ve validation set">
+<meta name="twitter:description" content="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.103 - Underfit, overfit ve validation setBu kez ağımızın karmaşıklığını arttırmanın ve azaltmanı">
+<meta name="twitter:image" content="http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/1.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/sunidimag/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/sunidimag/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/sunidimag/images/apple-touch-icon.png">
+          
+        
+    
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;subset=latin-ext" rel="stylesheet">
+    <!-- title -->
+    <title>103 - Underfit, overfit ve validation set</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/sunidimag/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/sunidimag/2017/08/07/102-Veri-muhendisligi-y-de-bias-ve-scale/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&text=103 - Underfit, overfit ve validation set"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&is_video=false&description=103 - Underfit, overfit ve validation set"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=103 - Underfit, overfit ve validation set&body=Check out this article: http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&name=103 - Underfit, overfit ve validation set&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz"><span class="toc-number">1.</span> <span class="toc-text">Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#103-Underfit-overfit-ve-validation-set"><span class="toc-number"></span> <span class="toc-text">103 - Underfit, overfit ve validation set</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Training-ve-test-kumelerinin-olusturulmasi"><span class="toc-number"></span> <span class="toc-text">Training ve test kümelerinin oluşturulması</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Validation-set"><span class="toc-number"></span> <span class="toc-text">Validation set</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-1-Underfit"><span class="toc-number"></span> <span class="toc-text">Deney 1 - Underfit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-2-Overfit"><span class="toc-number"></span> <span class="toc-text">Deney 2 - Overfit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ozet"><span class="toc-number"></span> <span class="toc-text">Özet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Odevler"><span class="toc-number"></span> <span class="toc-text">Ödevler</span></a>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        103 - Underfit, overfit ve validation set
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Suni Dimağ - Yapay sinir ağı maceraları</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-08-12T15:54:13.000Z" itemprop="datePublished">2017-08-12</time>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h5 id="Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz"><a href="#Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz" class="headerlink" title="Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz."></a>Bu yazıdaki tüm kodları jupyter notebook formatında, <a href="https://github.com/azmesai/suni-dimag" target="_blank" rel="external">Suni Dimağ github repository</a>‘sinden çekebilirsiniz.</h5><h1 id="103-Underfit-overfit-ve-validation-set"><a href="#103-Underfit-overfit-ve-validation-set" class="headerlink" title="103 - Underfit, overfit ve validation set"></a>103 - Underfit, overfit ve validation set</h1><p>Bu kez ağımızın karmaşıklığını arttırmanın ve azaltmanın ağın performansı üzerindeki etkilerini inceleyek ve doğrulama kümesi’nin (<em>validation set</em>) niçin gerekli olduğunu ögreneceğiz.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">%matplotlib inline</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">import</span> random</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> math</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"></div><div class="line">np.random.seed(<span class="number">1337</span>)</div></pre></td></tr></table></figure>
+<h2 id="Training-ve-test-kumelerinin-olusturulmasi"><a href="#Training-ve-test-kumelerinin-olusturulmasi" class="headerlink" title="Training ve test kümelerinin oluşturulması"></a>Training ve test kümelerinin oluşturulması</h2><p>Training ve test kümelerini üreten fonksiyonlarımızda çok fazla değişiklik yok. Geçen derste eklediğimiz bias ve scale değerlerini kaldırdım.</p>
+<p>testModel fonksiyonunu ise ideal sinus fonksiyonu yerine training verisini çizecek şekilde güncelledim.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">sine_function</span><span class="params">(noiserate=<span class="number">0</span>)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_sine_function</span><span class="params">(angle)</span>:</span></div><div class="line">        <span class="keyword">return</span> (math.sin(angle)+random.uniform(-noiserate,noiserate))</div><div class="line">    <span class="keyword">return</span> _sine_function</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">trainingData</span><span class="params">(func)</span>:</span></div><div class="line">    noiserate = <span class="number">0.2</span></div><div class="line">    X = []</div><div class="line">    y = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">100</span>):</div><div class="line">        angle=random.uniform(-math.pi,math.pi)</div><div class="line">        X.append(angle)</div><div class="line">        y.append(func(angle))</div><div class="line">    <span class="keyword">return</span> X,y</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">testData</span><span class="params">(func)</span>:</span></div><div class="line">    X = []</div><div class="line">    y = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">-1800</span>,<span class="number">1800</span>):</div><div class="line">        angle = math.radians(i/<span class="number">10</span>)</div><div class="line">        X.append(angle)</div><div class="line">        y.append(func(angle))</div><div class="line">    <span class="keyword">return</span> X,y</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">testModel</span><span class="params">(Xtrain,ytrain,X,y)</span>:</span></div><div class="line">    res = model.predict(X, batch_size=<span class="number">32</span>)</div><div class="line"></div><div class="line">    plt.scatter(Xtrain,ytrain,s=<span class="number">0.5</span>,label=<span class="string">'Training'</span>,color=<span class="string">'blue'</span>)</div><div class="line">    plt.plot(X,res, label=<span class="string">'sonuc'</span>,color=<span class="string">'red'</span>)</div><div class="line">    plt.xlabel(<span class="string">'x (Radyan)'</span>)</div><div class="line">    plt.ylabel(<span class="string">'sin(x)'</span>)</div><div class="line">    plt.legend()</div><div class="line">    plt.show()</div></pre></td></tr></table></figure>
+<h2 id="Validation-set"><a href="#Validation-set" class="headerlink" title="Validation set"></a>Validation set</h2><p>Şu anda tek boyutlu girişimiz ve tek boyutlu çıkışımız olduğundan rahatlıkla grafik çizerek ağımızın ne kadar genelleştirme yaptığını doğrulayabiliyoruz. Ancak bir çok <em>machine learning</em> problemi çok yüksek sayıda boyuta sahiptir ve o kadar da kolay görselleştirilemez. Bu yüzden <em>training set</em>‘in bir kısmını ayırıp eğitim için hiç kullanmayız. Böylece ağın hiç görmediği örnekler için de iyi çalışıp çalışmadığını sayısal olarak ölçebileceğimiz bir aracımız olur.</p>
+<h2 id="Deney-1-Underfit"><a href="#Deney-1-Underfit" class="headerlink" title="Deney 1 - Underfit"></a>Deney 1 - Underfit</h2><p>Modelin veriyi modellemeye yetecek kadar parametresi olmaması <em>underfit</em> denilen olaya, yani bir çeşit aşırı genelleştirmeye yol açar. Bunu test etmek için gizli katmanımızdaki nöron sayısını 1’e indirelim.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">model.fit(X, y, epochs=<span class="number">5000</span>,validation_split=<span class="number">0.1</span>)</div></pre></td></tr></table></figure>
+<p>Buradaki validation_split=0.1 parametresiyle de training set’in 10’da birinin validation set olarak ayrılacağını söylüyoruz. Her epoch’tan sonra keras bize normal loss’un dışında artık validation loss’u da bildirecek.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(Dense(<span class="number">1</span>, input_shape=(<span class="number">1</span>,), activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(<span class="number">1</span>))</div><div class="line">model.compile(loss=<span class="string">'mse'</span>, optimizer=<span class="string">'sgd'</span>)</div><div class="line">sine = sine_function(noiserate=<span class="number">0.3</span>)</div><div class="line">X,y = trainingData(sine)</div><div class="line">X_test, y_test = testData(sine)</div><div class="line">model.fit(X, y, epochs=<span class="number">1000</span>,validation_split=<span class="number">0.1</span>)</div><div class="line">testModel(X,y,X_test,y_test)</div></pre></td></tr></table></figure>
+<pre>
+
+Train on 90 samples, validate on 10 samples
+Epoch 1/1000
+90/90 [==============================] - 0s - loss: 8.9406 - val_loss: 2.9118
+Epoch 2/1000
+90/90 [==============================] - 0s - loss: 2.9006 - val_loss: 1.3733
+Epoch 3/1000
+90/90 [==============================] - 0s - loss: 1.4940 - val_loss: 0.8587
+Epoch 4/1000
+90/90 [==============================] - 0s - loss: 0.9532 - val_loss: 0.6527
+Epoch 5/1000
+90/90 [==============================] - 0s - loss: 0.6989 - val_loss: 0.5542
+Epoch 6/1000
+
+...
+
+Epoch 996/1000
+90/90 [==============================] - 0s - loss: 0.1822 - val_loss: 0.2857
+Epoch 997/1000
+90/90 [==============================] - 0s - loss: 0.1826 - val_loss: 0.2863
+Epoch 998/1000
+90/90 [==============================] - 0s - loss: 0.1822 - val_loss: 0.2861
+Epoch 999/1000
+90/90 [==============================] - 0s - loss: 0.1826 - val_loss: 0.2858
+Epoch 1000/1000
+90/90 [==============================] - 0s - loss: 0.1822 - val_loss: 0.2852
+
+</pre>
+
+<p><img src="1.png" alt=""></p>
+<p>Model bu kadar az parametreyle ancak tek bir dirseği olan iki çizgi modelleyebildiğinden veriye bu kadar yaklaşabildi.</p>
+<p>Eğitimin sonunda training loss’un da validation loss’un da oldukça yüksek bir değerde düşmeyi bıraktığını görüyoruz. Bu ağınızın underfit durumunda olduğuna işaret eder. Ağın performansı hem gördüğü, hem de daha önceki görmediği örnekler için kötü durumda.</p>
+<h2 id="Deney-2-Overfit"><a href="#Deney-2-Overfit" class="headerlink" title="Deney 2 - Overfit"></a>Deney 2 - Overfit</h2><p>Skalanın tam karşı noktasında ise <em>overfit</em> var. Modelimizin karmaşıklığı gerekenden fazlaysa bu kez de model genelleme yapma yetisini kaybeder. Bunu test etmek için elimizde problemle orantısız büyüklükte bir ağ tanımlayalım. Bu ağ 280, 180, 80 ve 80 nörana sahip 4 ayrı gizli katman (<em>hidden layer</em>) içeriyor.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(Dense(<span class="number">280</span>, input_shape=(<span class="number">1</span>,), activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(<span class="number">180</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(<span class="number">80</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(<span class="number">80</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(<span class="number">1</span>))</div><div class="line">model.compile(loss=<span class="string">'mse'</span>, optimizer=<span class="string">'adam'</span>)</div><div class="line">sine = sine_function(noiserate=<span class="number">0.2</span>)</div><div class="line">X,y = trainingData(sine)</div><div class="line">X_test, y_test = testData(sine)</div><div class="line">model.fit(X, y, epochs=<span class="number">1000</span>,validation_split=<span class="number">0.1</span>)</div><div class="line">testModel(X,y,X_test,y_test)</div></pre></td></tr></table></figure>
+<pre>
+
+...
+
+Epoch 96/1000
+90/90 [==============================] - 0s - loss: 0.0104 - val_loss: 0.0188
+Epoch 97/1000
+90/90 [==============================] - 0s - loss: 0.0104 - val_loss: 0.0217
+Epoch 98/1000
+90/90 [==============================] - 0s - loss: 0.0111 - val_loss: 0.0186
+Epoch 99/1000
+90/90 [==============================] - 0s - loss: 0.0129 - val_loss: 0.0159
+Epoch 100/1000
+90/90 [==============================] - 0s - loss: 0.0124 - val_loss: 0.0242
+Epoch 101/1000
+90/90 [==============================] - 0s - loss: 0.0120 - val_loss: 0.0152
+Epoch 102/1000
+90/90 [==============================] - 0s - loss: 0.0121 - val_loss: 0.0211
+Epoch 103/1000
+90/90 [==============================] - 0s - loss: 0.0118 - val_loss: 0.0218
+Epoch 104/1000
+90/90 [==============================] - 0s - loss: 0.0109 - val_loss: 0.0200
+Epoch 105/1000
+90/90 [==============================] - 0s - loss: 0.0116 - val_loss: 0.0232
+Epoch 106/1000
+90/90 [==============================] - 0s - loss: 0.0114 - val_loss: 0.0182
+
+...
+
+Epoch 1000/1000
+90/90 [==============================] - 0s - loss: 0.0079 - val_loss: 0.0250
+
+</pre>
+
+<p><img src="2.png" alt=""></p>
+<p>Modelimiz bu kez de elindeki çok miktarda parametreyi kullanarak, training set’teki her bir örneğe yaklaşabildiği kadar yaklaşmaya çalıştı. Modelin training loss’u çok küçük olsa da, daha önce görmediğı örneklerde ideal büyüklükte bir ağ’dan daha kötü performans sergiler.</p>
+<p>Loss’ları inceleyince de, validation loss’un 100. epoch civarında düşmeyi bıraktığını, training loss’un ise bir süre daha düşmeye devam ettiğini görüyoruz. İşte tam da bu noktada ağımız overfit etmeye başlamış demek ki. İleride overfit olayını engellemek için çeşitli yöntemlerden bahsedeceğim.</p>
+<h2 id="Ozet"><a href="#Ozet" class="headerlink" title="Özet"></a>Özet</h2><ul>
+<li>Validation set olmadan ağın elimizdeki veriyi ne kadar iyi genelleştirdiğini anlamak imkansızdır. Training loss çok düşük olsa da, ağ bizim verdiğimiz örnekleri ezberlemiş (overfit) olabilir.</li>
+<li>Ağ’ın veriyi öğrenmek için yeterli karmaşıklığa sahip olmaması, yeterince ögrenememesine (underfit) yol açar. Bu durum hem training hem de validation loss’un yüksek olmasından anlaşılabilir.</li>
+<li>Ağ’in veriyi ögrenmek için gerekenden fazla karmaşıklığa sahip olmasi, veriyi ezberlemesine (overfit) yol açar. Bu durum training loss düşerken, validation loss’un düşmeye devam etmemesi veya yükselmesiyle anlaşılabilir.</li>
+</ul>
+<h2 id="Odevler"><a href="#Odevler" class="headerlink" title="Ödevler"></a>Ödevler</h2><ul>
+<li>Veriyi öğrenmek için ideal olan modeli bulun.</li>
+<li>Training set’teki veri miktarını arttırmak, overfit durumunu nasıl etkiliyor?</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#Bu-yazidaki-tum-kodlari-jupyter-notebook-formatinda-Suni-Dimag-github-repository‘sinden-cekebilirsiniz"><span class="toc-number">1.</span> <span class="toc-text">Bu yazıdaki tüm kodları jupyter notebook formatında, Suni Dimağ github repository‘sinden çekebilirsiniz.</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#103-Underfit-overfit-ve-validation-set"><span class="toc-number"></span> <span class="toc-text">103 - Underfit, overfit ve validation set</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Training-ve-test-kumelerinin-olusturulmasi"><span class="toc-number"></span> <span class="toc-text">Training ve test kümelerinin oluşturulması</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Validation-set"><span class="toc-number"></span> <span class="toc-text">Validation set</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-1-Underfit"><span class="toc-number"></span> <span class="toc-text">Deney 1 - Underfit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deney-2-Overfit"><span class="toc-number"></span> <span class="toc-text">Deney 2 - Overfit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ozet"><span class="toc-number"></span> <span class="toc-text">Özet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Odevler"><span class="toc-number"></span> <span class="toc-text">Ödevler</span></a>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&text=103 - Underfit, overfit ve validation set"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&is_video=false&description=103 - Underfit, overfit ve validation set"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=103 - Underfit, overfit ve validation set&body=Check out this article: http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&title=103 - Underfit, overfit ve validation set"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://symbolengine.com/sunidimag/2017/08/12/103-Underfit-overfit-ve-validation-set/&name=103 - Underfit, overfit ve validation set&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2017 Cem Kod
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/sunidimag/">Anasayfa</a></li>
+         
+          <li><a href="/sunidimag/archives/">Arşiv</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/sunidimag/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/sunidimag/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/sunidimag/lib/justified-gallery/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+<script src="/sunidimag/lib/jquery/jquery.min.js"></script>
+<script src="/sunidimag/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/sunidimag/js/main.js"></script>
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-184132-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+
